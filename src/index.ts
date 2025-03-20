@@ -5,6 +5,7 @@ import { UserRoutes } from "./routes/user.routes"
 import { connectToDataBase } from "./connections/mongodb.connection"
 import { RoleRoutes } from "./routes/role.routes"
 import { TaskRoutes } from "./routes/task.routes"
+import{ AuthRoutes} from "./routes/auth.routes"
 
 const app = new Elysia()
 console.log("Server is running on port 3000")
@@ -12,6 +13,7 @@ console.log("Server is running on port 3000")
         app
             .use(swagger())
             .use(cors())
+            .use(AuthRoutes)
             .use(UserRoutes)  
             .use(RoleRoutes)
             .use(TaskRoutes) 

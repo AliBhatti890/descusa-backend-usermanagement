@@ -19,7 +19,7 @@ export const UserRepository = {
         }
     },
 
-    getUserByuser_id: async (_id: string) => {
+    getUserByuser_id: async (_id: string) => {  
         try {
             return await User.findOne({ _id }); // `findOne` is correct for Mongoose
         } catch (error: any) {
@@ -41,6 +41,17 @@ export const UserRepository = {
             return await User.findOneAndDelete({ _id }); // `findOneAndDelete` is correct
         } catch (error: any) {
             throw new Error(error?.message || "Error deleting user");
+        }
+    },
+
+
+
+
+    getUserByEmail: async (users_email:  string) => {
+        try {
+            return await User.findOne({ email: users_email });
+        } catch (error : any) {
+            throw new Error(error.message);
         }
     }
 };

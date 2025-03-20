@@ -15,8 +15,6 @@
   "devDependencies": {
     "bun-types": "latest"
   },
-  "engines": {
-    "node": "18.x"
-  },
+  
   "module": "src/index.js"
 }
