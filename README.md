@@ -4,6 +4,10 @@
 To get started with this template, simply paste this command into your terminal:
 ```bash
 bun create elysia ./elysia-example
+
+
+```bash
+npm i -g bun
 ```
 
 ## Development

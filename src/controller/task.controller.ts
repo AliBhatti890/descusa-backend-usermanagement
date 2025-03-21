@@ -1,4 +1,6 @@
 import { TaskRepository } from "../repostory/task.repostory";
+import { UserRepository } from "../repostory/user.repostory";
+import { UserController } from "./user.controller";
 
 
 export const TaskController = {
@@ -26,25 +28,47 @@ export const TaskController = {
   getAllTask: async ({ error }: any) => {
     try {
       console.log("Received Params:");
-      const Task = await TaskRepository.getAllTasksFromModel();
+      
+      const tasks = await TaskRepository.getAllTasksFromModel(); // Fetch all tasks
+  
+      // Fetch assignees and include `first_name` directly in the task object
+      const tasksWithAssignees = await Promise.all(
+        tasks.map(async (task) => {
+          const user = task.assignee_to 
+            ? await UserRepository.getUserByuser_id(task.assignee_to) 
+            : null;
+            
+          return { 
+            ...task.toObject(),  // Convert Mongoose document to plain object
+            first_name: user ? user.first_name : null, // Add first_name directly to the task object
+            user_type: user ? user.user_type : null
+          }; 
+        })
+      );
+  
       return {
         status: 200,
-        body: { message: "All Task Retrieved Successfully", data: Task },
+        body: { message: "All Tasks Retrieved Successfully", data: tasksWithAssignees },
       };
     } catch (err: any) {
-      return error(500, err.message || "Error fetching Task");
+      return error(500, err.message || "Error fetching tasks");
     }
   },
-
+  
+  
   getTask: async ({ params, error, query ,set}: any) => {
     try {
     console.log("Received Params: " , params, query);
-      const Task = await TaskRepository.getTaskByTask_id(query._id);
-      if (!Task) {
-        return error(404, "Task not found");
-      }
-      return set.status = 200, {message: "Get single Task Sucessfully Get", data: Task}
-    } 
+    const task = await TaskRepository.getTaskByTask_id(query._id);
+    if (!task) {
+      return set.status(404).json({ error: "Task not found" });
+    }
+
+      const user = task.assignee_to ? await UserRepository.getUserByuser_id(task.assignee_to) : null;
+    return set.status = 200, {message: "Get single Task Sucessfully Get", data: task, 
+        assignee: user
+    }
+    }
    
     
      catch (err: any) {
